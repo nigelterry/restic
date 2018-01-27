@@ -17,12 +17,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/filter"
-	"github.com/restic/restic/internal/repository"
-	"github.com/restic/restic/internal/restic"
-	rtest "github.com/restic/restic/internal/test"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/filter"
+	"github.com/nigelterry/restic/internal/repository"
+	"github.com/nigelterry/restic/internal/restic"
+	rtest "github.com/nigelterry/restic/internal/test"
 )
 
 func parseIDsFromReader(t testing.TB, rd io.Reader) restic.IDs {

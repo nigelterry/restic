@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/index"
-	"github.com/restic/restic/internal/repository"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/index"
+	"github.com/nigelterry/restic/internal/repository"
+	"github.com/nigelterry/restic/internal/restic"
 
 	"github.com/spf13/cobra"
 )
@@ -205,7 +205,7 @@ func pruneRepository(gopts GlobalOptions, repo restic.Repository) error {
 	if len(usedBlobs) > stats.blobs {
 		return errors.Fatalf("number of used blobs is larger than number of available blobs!\n" +
 			"Please report this error (along with the output of the 'prune' run) at\n" +
-			"https://github.com/restic/restic/issues/new")
+			"https://github.com/nigelterry/restic/issues/new")
 	}
 
 	Verbosef("found %d of %d data blobs still in use, removing %d blobs\n",

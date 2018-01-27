@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/restic"
 	"github.com/spf13/cobra"
 )
 

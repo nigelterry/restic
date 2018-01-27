@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/restic"
 )
 
 func formatBytes(c uint64) string {

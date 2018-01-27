@@ -8,8 +8,8 @@ import (
 	_ "net/http/pprof"
 	"os"
 
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/repository"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/repository"
 
 	"github.com/pkg/profile"
 )

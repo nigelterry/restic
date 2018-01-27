@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	rtest "github.com/restic/restic/internal/test"
+	rtest "github.com/nigelterry/restic/internal/test"
 )
 
 func TestRestoreLocalLayout(t *testing.T) {

@@ -12,11 +12,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/restic/restic/internal/archiver"
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/fs"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/archiver"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/fs"
+	"github.com/nigelterry/restic/internal/restic"
 )
 
 var cmdBackup = &cobra.Command{
