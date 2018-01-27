@@ -30,11 +30,11 @@ var config = struct {
 	MinVersion GoVersion
 }{
 	Name:      "restic",                              // name of the program executable and directory
-	Namespace: "github.com/restic/restic",            // subdir of GOPATH, e.g. "github.com/foo/bar"
-	Main:      "github.com/restic/restic/cmd/restic", // package name for the main package
+	Namespace: "github.com/nigelterry/restic",            // subdir of GOPATH, e.g. "github.com/foo/bar"
+	Main:      "github.com/nigelterry/restic/cmd/restic", // package name for the main package
 	Tests: []string{ // tests to run
-		"github.com/restic/restic/internal/...",
-		"github.com/restic/restic/cmd/..."},
+		"github.com/nigelterry/restic/internal/...",
+		"github.com/nigelterry/restic/cmd/..."},
 	MinVersion: GoVersion{Major: 1, Minor: 8, Patch: 0}, // minimum Go version supported
 }
 
