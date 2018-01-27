@@ -407,6 +407,15 @@ func parseConfig(loc location.Location, opts options.Options) (interface{}, erro
 		debug.Log("opening local repository at %#v", cfg)
 		return cfg, nil
 
+	case "pcloud":
+		cfg := loc.Config.(pcloud.Config)
+		if err := opts.Apply(loc.Scheme, &cfg); err != nil {
+			return nil, err
+		}
+
+		debug.Log("opening pcloud repository at %#v", cfg)
+		return cfg, nil
+
 	case "sftp":
 		cfg := loc.Config.(sftp.Config)
 		if err := opts.Apply(loc.Scheme, &cfg); err != nil {
@@ -571,6 +580,8 @@ func open(s string, gopts GlobalOptions, opts options.Options) (restic.Backend, 
 		be, err = b2.Open(globalOptions.ctx, cfg.(b2.Config), rt)
 	case "rest":
 		be, err = rest.Open(cfg.(rest.Config), rt)
+	case "pcloud":
+		be, err = pcloud.Open(cfg.(pcloud.Config), rt)
 
 	default:
 		return nil, errors.Fatalf("invalid backend: %q", loc.Scheme)
@@ -628,6 +639,8 @@ func create(s string, opts options.Options) (restic.Backend, error) {
 		return b2.Create(globalOptions.ctx, cfg.(b2.Config), rt)
 	case "rest":
 		return rest.Create(cfg.(rest.Config), rt)
+	case "pcloud":
+		return pcloud.Create(cfg.(pcloud.Config), rt)
 	}
 
 	debug.Log("invalid repository scheme: %v", s)
