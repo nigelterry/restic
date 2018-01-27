@@ -13,6 +13,7 @@ import (
 	"github.com/restic/restic/internal/backend/sftp"
 	"github.com/restic/restic/internal/backend/swift"
 	"github.com/restic/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/pcloud"
 )
 
 // Location specifies the location of a repository, including the method of

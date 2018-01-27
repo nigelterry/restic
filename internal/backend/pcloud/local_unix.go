@@ -1,6 +1,6 @@
 // +build !windows
 
-package local
+package pcloud
 
 import (
 	"os"

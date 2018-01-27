@@ -1,4 +1,4 @@
-package local
+package pcloud
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 	"github.com/restic/restic/internal/fs"
 )
 
-// Local is a backend in a local directory.
+// Local is a backend in a pcloud directory.
 type Local struct {
 	Config
 	backend.Layout
@@ -44,9 +44,9 @@ func dirExists(name string) bool {
 	return fi.IsDir()
 }
 
-// Open opens the local backend as specified by config.
+// Open opens the pcloud backend as specified by config.
 func Open(cfg Config) (*Local, error) {
-	debug.Log("open local backend at %v (layout %q)", cfg.Path, cfg.Layout)
+	debug.Log("open pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
 	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {
 		return nil, err
@@ -55,10 +55,10 @@ func Open(cfg Config) (*Local, error) {
 	return &Local{Config: cfg, Layout: l}, nil
 }
 
-// Create creates all the necessary files and directories for a new local
+// Create creates all the necessary files and directories for a new pcloud
 // backend at dir. Afterwards a new config blob should be created.
 func Create(cfg Config) (*Local, error) {
-	debug.Log("create local backend at %v (layout %q)", cfg.Path, cfg.Layout)
+	debug.Log("create pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
 
 	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {

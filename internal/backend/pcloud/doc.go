@@ -1,2 +1,2 @@
-// Package local implements repository storage in a local directory.
+// Package pcloud implements repository storage on pCloud.
 package pcloud
