@@ -12,6 +12,7 @@ import (
 	"github.com/nigelterry/restic/internal/backend"
 	"github.com/nigelterry/restic/internal/debug"
 	"github.com/nigelterry/restic/internal/fs"
+	"net/http"
 )
 
 // Local is a backend in a pcloud directory.
@@ -45,7 +46,7 @@ func dirExists(name string) bool {
 }
 
 // Open opens the pcloud backend as specified by config.
-func Open(cfg Config) (*Local, error) {
+func Open(cfg Config, rt http.RoundTripper) (*Local, error) {
 	debug.Log("open pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
 	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {
@@ -57,7 +58,7 @@ func Open(cfg Config) (*Local, error) {
 
 // Create creates all the necessary files and directories for a new pcloud
 // backend at dir. Afterwards a new config blob should be created.
-func Create(cfg Config) (*Local, error) {
+func Create(cfg Config, rt http.RoundTripper) (*Local, error) {
 	debug.Log("create pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
 
 	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
