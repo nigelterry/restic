@@ -10,6 +10,7 @@ import (
 	"github.com/restic/restic/internal/restic"
 
 	"github.com/restic/restic/internal/backend"
+	"github.com/nigelterry/restic/internal/backend"
 	"github.com/restic/restic/internal/debug"
 	"github.com/restic/restic/internal/fs"
 )
