@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/fs"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/fs"
+	"github.com/nigelterry/restic/internal/restic"
 )
 
 // Cache manages a local cache.

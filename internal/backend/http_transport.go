@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/restic/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/debug"
 )
 
 // Transport returns a new http.RoundTripper with default settings applied. If

@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/restic/restic/internal/checker"
-	"github.com/restic/restic/internal/repository"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/checker"
+	"github.com/nigelterry/restic/internal/repository"
+	"github.com/nigelterry/restic/internal/restic"
 )
 
 var testSnapshotTime = time.Unix(1460289341, 207401672)

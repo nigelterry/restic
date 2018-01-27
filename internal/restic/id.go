@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/restic/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/errors"
 )
 
 // Hash returns the ID for data.

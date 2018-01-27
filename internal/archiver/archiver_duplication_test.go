@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/restic"
 
-	"github.com/restic/restic/internal/archiver"
-	"github.com/restic/restic/internal/mock"
-	"github.com/restic/restic/internal/repository"
+	"github.com/nigelterry/restic/internal/archiver"
+	"github.com/nigelterry/restic/internal/mock"
+	"github.com/nigelterry/restic/internal/repository"
 )
 
 const parallelSaves = 50

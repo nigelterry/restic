@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/restic/restic/internal/backend"
-	"github.com/restic/restic/internal/backend/rest"
-	"github.com/restic/restic/internal/backend/test"
-	"github.com/restic/restic/internal/restic"
-	rtest "github.com/restic/restic/internal/test"
+	"github.com/nigelterry/restic/internal/backend"
+	"github.com/nigelterry/restic/internal/backend/rest"
+	"github.com/nigelterry/restic/internal/backend/test"
+	"github.com/nigelterry/restic/internal/restic"
+	rtest "github.com/nigelterry/restic/internal/test"
 )
 
 func runRESTServer(ctx context.Context, t testing.TB, dir string) (*url.URL, func()) {

@@ -3,8 +3,8 @@ package local
 import (
 	"strings"
 
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/options"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/options"
 )
 
 // Config holds all information needed to open a local repository.

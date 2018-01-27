@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/restic/restic/internal/archiver"
-	"github.com/restic/restic/internal/repository"
-	"github.com/restic/restic/internal/restic"
-	rtest "github.com/restic/restic/internal/test"
+	"github.com/nigelterry/restic/internal/archiver"
+	"github.com/nigelterry/restic/internal/repository"
+	"github.com/nigelterry/restic/internal/restic"
+	rtest "github.com/nigelterry/restic/internal/test"
 )
 
 var testSizes = []int{5, 23, 2<<18 + 23, 1 << 20}

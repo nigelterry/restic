@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/restic/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/errors"
 
-	"github.com/restic/restic/internal/worker"
+	"github.com/nigelterry/restic/internal/worker"
 )
 
 const concurrency = 10

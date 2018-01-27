@@ -3,7 +3,7 @@ package sftp
 import (
 	"unicode"
 
-	"github.com/restic/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/errors"
 )
 
 // shellSplitter splits a command string into separater arguments. It supports

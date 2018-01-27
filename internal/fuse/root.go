@@ -6,8 +6,8 @@ package fuse
 import (
 	"time"
 
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/restic"
 
 	"golang.org/x/net/context"
 

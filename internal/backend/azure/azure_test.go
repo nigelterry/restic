@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/restic/restic/internal/backend"
-	"github.com/restic/restic/internal/backend/azure"
-	"github.com/restic/restic/internal/backend/test"
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/restic"
-	rtest "github.com/restic/restic/internal/test"
+	"github.com/nigelterry/restic/internal/backend"
+	"github.com/nigelterry/restic/internal/backend/azure"
+	"github.com/nigelterry/restic/internal/backend/test"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/restic"
+	rtest "github.com/nigelterry/restic/internal/test"
 )
 
 func newAzureTestSuite(t testing.TB) *test.Suite {

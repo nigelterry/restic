@@ -7,10 +7,10 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/mock"
-	"github.com/restic/restic/internal/restic"
-	"github.com/restic/restic/internal/test"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/mock"
+	"github.com/nigelterry/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/test"
 )
 
 func TestBackendRetrySeeker(t *testing.T) {

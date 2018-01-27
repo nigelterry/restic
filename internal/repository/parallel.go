@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/restic"
 	"golang.org/x/sync/errgroup"
 )
 

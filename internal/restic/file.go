@@ -3,7 +3,7 @@ package restic
 import (
 	"fmt"
 
-	"github.com/restic/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/errors"
 )
 
 // FileType is the type of a file in the backend.

@@ -3,7 +3,7 @@ package sftp
 import (
 	"os/exec"
 
-	"github.com/restic/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/errors"
 )
 
 // startForeground runs cmd in the foreground, by temporarily switching to the

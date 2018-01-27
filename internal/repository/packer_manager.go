@@ -7,14 +7,14 @@ import (
 	"os"
 	"sync"
 
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/hashing"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/hashing"
+	"github.com/nigelterry/restic/internal/restic"
 
-	"github.com/restic/restic/internal/crypto"
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/fs"
-	"github.com/restic/restic/internal/pack"
+	"github.com/nigelterry/restic/internal/crypto"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/fs"
+	"github.com/nigelterry/restic/internal/pack"
 )
 
 // Saver implements saving data in a backend.

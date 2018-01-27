@@ -6,8 +6,8 @@ import (
 	"runtime"
 
 	"github.com/pkg/errors"
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/fs"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/fs"
 )
 
 // xdgCacheDir returns the cache directory according to XDG basedir spec, see

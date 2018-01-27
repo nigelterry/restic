@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/restic/restic/internal/errors"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/errors"
+	"github.com/nigelterry/restic/internal/restic"
 
-	"github.com/restic/restic/internal/backend/mem"
-	"github.com/restic/restic/internal/backend/test"
+	"github.com/nigelterry/restic/internal/backend/mem"
+	"github.com/nigelterry/restic/internal/backend/test"
 )
 
 //go:generate go run generate_test_list.go

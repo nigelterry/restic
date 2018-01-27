@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/restic/restic/internal/backend"
-	"github.com/restic/restic/internal/debug"
-	"github.com/restic/restic/internal/restic"
+	"github.com/nigelterry/restic/internal/backend"
+	"github.com/nigelterry/restic/internal/debug"
+	"github.com/nigelterry/restic/internal/restic"
 
 	"io/ioutil"
 

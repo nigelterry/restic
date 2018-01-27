@@ -5,7 +5,7 @@ package pcloud
 import (
 	"os"
 
-	"github.com/restic/restic/internal/fs"
+	"github.com/nigelterry/restic/internal/fs"
 )
 
 // set file to readonly
