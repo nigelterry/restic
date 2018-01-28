@@ -48,7 +48,7 @@ func dirExists(name string) bool {
 // Open opens the pcloud backend as specified by config.
 func Open(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
 	debug.Log("open pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
-	l, err := backend.ParseLayout(&backend.PcloudFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
+	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func Open(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
 func Create(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
 	debug.Log("create pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
 
-	l, err := backend.ParseLayout(&backend.PcloudFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
+	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {
 		return nil, err
 	}
