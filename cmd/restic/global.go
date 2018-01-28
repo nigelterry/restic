@@ -523,6 +523,7 @@ func parseConfig(loc location.Location, opts options.Options) (interface{}, erro
 
 		debug.Log("opening b2 repository at %#v", cfg)
 		return cfg, nil
+
 	case "rest":
 		cfg := loc.Config.(rest.Config)
 		if err := opts.Apply(loc.Scheme, &cfg); err != nil {
