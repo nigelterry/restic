@@ -397,6 +397,8 @@ func parseConfig(loc location.Location, opts options.Options) (interface{}, erro
 	// only apply options for a particular backend here
 	opts = opts.Extract(loc.Scheme)
 
+	debug.Log("I think the Scheme is %#v", opts)
+
 	switch loc.Scheme {
 	case "local":
 		cfg := loc.Config.(local.Config)
