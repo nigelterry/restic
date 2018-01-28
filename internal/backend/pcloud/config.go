@@ -23,5 +23,5 @@ func ParseConfig(cfg string) (interface{}, error) {
 		return nil, errors.New(`invalid format, prefix "pcloud" not found`)
 	}
 
-	return Config{Path: cfg[6:]}, nil
+	return Config{Path: cfg[7:]}, nil
 }

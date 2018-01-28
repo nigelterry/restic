@@ -15,14 +15,14 @@ import (
 	"net/http"
 )
 
-// Local is a backend in a pcloud directory.
-type Local struct {
+// Pcloud is a backend in a pcloud directory.
+type Pcloud struct {
 	Config
 	backend.Layout
 }
 
-// ensure statically that *Local implements restic.Backend.
-var _ restic.Backend = &Local{}
+// ensure statically that *Pcloud implements restic.Backend.
+var _ restic.Backend = &Pcloud{}
 
 const defaultLayout = "default"
 
@@ -46,27 +46,27 @@ func dirExists(name string) bool {
 }
 
 // Open opens the pcloud backend as specified by config.
-func Open(cfg Config, rt http.RoundTripper) (*Local, error) {
+func Open(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
 	debug.Log("open pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
-	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
+	l, err := backend.ParseLayout(&backend.PcloudFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Local{Config: cfg, Layout: l}, nil
+	return &Pcloud{Config: cfg, Layout: l}, nil
 }
 
 // Create creates all the necessary files and directories for a new pcloud
 // backend at dir. Afterwards a new config blob should be created.
-func Create(cfg Config, rt http.RoundTripper) (*Local, error) {
+func Create(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
 	debug.Log("create pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
 
-	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
+	l, err := backend.ParseLayout(&backend.PcloudFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	be := &Local{
+	be := &Pcloud{
 		Config: cfg,
 		Layout: l,
 	}
@@ -89,17 +89,17 @@ func Create(cfg Config, rt http.RoundTripper) (*Local, error) {
 }
 
 // Location returns this backend's location (the directory name).
-func (b *Local) Location() string {
+func (b *Pcloud) Location() string {
 	return b.Path
 }
 
 // IsNotExist returns true if the error is caused by a non existing file.
-func (b *Local) IsNotExist(err error) bool {
+func (b *Pcloud) IsNotExist(err error) bool {
 	return os.IsNotExist(errors.Cause(err))
 }
 
 // Save stores data in the backend at the handle.
-func (b *Local) Save(ctx context.Context, h restic.Handle, rd io.Reader) error {
+func (b *Pcloud) Save(ctx context.Context, h restic.Handle, rd io.Reader) error {
 	debug.Log("Save %v", h)
 	if err := h.Valid(); err != nil {
 		return err
@@ -150,7 +150,7 @@ func (b *Local) Save(ctx context.Context, h restic.Handle, rd io.Reader) error {
 // Load returns a reader that yields the contents of the file at h at the
 // given offset. If length is nonzero, only a portion of the file is
 // returned. rd must be closed after use.
-func (b *Local) Load(ctx context.Context, h restic.Handle, length int, offset int64) (io.ReadCloser, error) {
+func (b *Pcloud) Load(ctx context.Context, h restic.Handle, length int, offset int64) (io.ReadCloser, error) {
 	debug.Log("Load %v, length %v, offset %v", h, length, offset)
 	if err := h.Valid(); err != nil {
 		return nil, err
@@ -181,7 +181,7 @@ func (b *Local) Load(ctx context.Context, h restic.Handle, length int, offset in
 }
 
 // Stat returns information about a blob.
-func (b *Local) Stat(ctx context.Context, h restic.Handle) (restic.FileInfo, error) {
+func (b *Pcloud) Stat(ctx context.Context, h restic.Handle) (restic.FileInfo, error) {
 	debug.Log("Stat %v", h)
 	if err := h.Valid(); err != nil {
 		return restic.FileInfo{}, err
@@ -196,7 +196,7 @@ func (b *Local) Stat(ctx context.Context, h restic.Handle) (restic.FileInfo, err
 }
 
 // Test returns true if a blob of the given type and name exists in the backend.
-func (b *Local) Test(ctx context.Context, h restic.Handle) (bool, error) {
+func (b *Pcloud) Test(ctx context.Context, h restic.Handle) (bool, error) {
 	debug.Log("Test %v", h)
 	_, err := fs.Stat(b.Filename(h))
 	if err != nil {
@@ -210,7 +210,7 @@ func (b *Local) Test(ctx context.Context, h restic.Handle) (bool, error) {
 }
 
 // Remove removes the blob with the given name and type.
-func (b *Local) Remove(ctx context.Context, h restic.Handle) error {
+func (b *Pcloud) Remove(ctx context.Context, h restic.Handle) error {
 	debug.Log("Remove %v", h)
 	fn := b.Filename(h)
 
@@ -229,7 +229,7 @@ func isFile(fi os.FileInfo) bool {
 
 // List runs fn for each file in the backend which has the type t. When an
 // error occurs (or fn returns an error), List stops and returns it.
-func (b *Local) List(ctx context.Context, t restic.FileType, fn func(restic.FileInfo) error) error {
+func (b *Pcloud) List(ctx context.Context, t restic.FileType, fn func(restic.FileInfo) error) error {
 	debug.Log("List %v", t)
 
 	basedir, subdirs := b.Basedir(t)
@@ -272,13 +272,13 @@ func (b *Local) List(ctx context.Context, t restic.FileType, fn func(restic.File
 }
 
 // Delete removes the repository and all files.
-func (b *Local) Delete(ctx context.Context) error {
+func (b *Pcloud) Delete(ctx context.Context) error {
 	debug.Log("Delete()")
 	return fs.RemoveAll(b.Path)
 }
 
 // Close closes all open files.
-func (b *Local) Close() error {
+func (b *Pcloud) Close() error {
 	debug.Log("Close()")
 	// this does not need to do anything, all open files are closed within the
 	// same function.
