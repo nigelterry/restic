@@ -397,8 +397,6 @@ func parseConfig(loc location.Location, opts options.Options) (interface{}, erro
 	// only apply options for a particular backend here
 	opts = opts.Extract(loc.Scheme)
 
-	debug.Log("I think the Scheme is %#v", opts)
-
 	switch loc.Scheme {
 	case "local":
 		cfg := loc.Config.(local.Config)
@@ -414,6 +412,9 @@ func parseConfig(loc location.Location, opts options.Options) (interface{}, erro
 		if err := opts.Apply(loc.Scheme, &cfg); err != nil {
 			return nil, err
 		}
+
+
+		Verbosef("I think the Scheme is %#v\n", cfg)
 
 		debug.Log("opening pcloud repository at %#v", cfg)
 		return cfg, nil

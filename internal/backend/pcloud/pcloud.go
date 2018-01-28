@@ -113,7 +113,7 @@ func (b *Pcloud) Save(ctx context.Context, h restic.Handle, rd io.Reader) error 
 	if b.IsNotExist(err) {
 		debug.Log("error %v: creating dir", err)
 
-		// error is caused by a missing directory, try to create it
+		// error is caused by a missing directory, try to create it/home/nterry/resticDevel
 		mkdirErr := os.MkdirAll(filepath.Dir(filename), backend.Modes.Dir)
 		if mkdirErr != nil {
 			debug.Log("error creating dir %v: %v", filepath.Dir(filename), mkdirErr)
