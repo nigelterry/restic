@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/repository"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/repository"
+	"github.com/restic/restic/internal/restic"
 )
 
 var cmdLs = &cobra.Command{

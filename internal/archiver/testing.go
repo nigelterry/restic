@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/restic"
 )
 
 // TestSnapshot creates a new snapshot of path.

@@ -5,7 +5,7 @@ package local
 import (
 	"os"
 
-	"github.com/nigelterry/restic/internal/fs"
+	"github.com/restic/restic/internal/fs"
 )
 
 // set file to readonly

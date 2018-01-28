@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/restic"
 	"github.com/spf13/cobra"
 )
 

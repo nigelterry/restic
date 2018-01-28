@@ -6,10 +6,10 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/backend"
-	"github.com/nigelterry/restic/internal/backend/mem"
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/backend"
+	"github.com/restic/restic/internal/backend/mem"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 const KiB = 1 << 10

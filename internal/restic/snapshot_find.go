@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 )
 
 // ErrNoSnapshotFound is returned when no snapshot for the given criteria could be found.

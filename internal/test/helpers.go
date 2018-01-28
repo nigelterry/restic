@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 
 	mrand "math/rand"
 )

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 
 	"github.com/restic/chunker"
 )

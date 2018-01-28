@@ -7,13 +7,13 @@ import (
 	"io"
 	"os"
 
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/fs"
-	"github.com/nigelterry/restic/internal/hashing"
-	"github.com/nigelterry/restic/internal/pack"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/fs"
+	"github.com/restic/restic/internal/hashing"
+	"github.com/restic/restic/internal/pack"
+	"github.com/restic/restic/internal/restic"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 )
 
 // Repack takes a list of packs together with a list of blobs contained in

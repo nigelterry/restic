@@ -7,8 +7,8 @@ import (
 	"math/rand"
 	"sync"
 
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/restic"
 )
 
 // ErrorBackend is used to induce errors into various function calls and test

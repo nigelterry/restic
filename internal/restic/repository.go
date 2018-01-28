@@ -3,7 +3,7 @@ package restic
 import (
 	"context"
 
-	"github.com/nigelterry/restic/internal/crypto"
+	"github.com/restic/restic/internal/crypto"
 )
 
 // Repository stores data in a backend. It provides high-level functions and

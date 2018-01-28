@@ -3,8 +3,8 @@ package list
 import (
 	"context"
 
-	"github.com/nigelterry/restic/internal/restic"
-	"github.com/nigelterry/restic/internal/worker"
+	"github.com/restic/restic/internal/restic"
+	"github.com/restic/restic/internal/worker"
 )
 
 const listPackWorkers = 10

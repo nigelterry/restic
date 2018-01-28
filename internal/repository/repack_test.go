@@ -6,9 +6,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/index"
-	"github.com/nigelterry/restic/internal/repository"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/index"
+	"github.com/restic/restic/internal/repository"
+	"github.com/restic/restic/internal/restic"
 )
 
 func randomSize(min, max int) int {

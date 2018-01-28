@@ -10,14 +10,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/archiver"
-	"github.com/nigelterry/restic/internal/checker"
-	"github.com/nigelterry/restic/internal/crypto"
-	"github.com/nigelterry/restic/internal/repository"
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/archiver"
+	"github.com/restic/restic/internal/checker"
+	"github.com/restic/restic/internal/crypto"
+	"github.com/restic/restic/internal/repository"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 
 	"github.com/restic/chunker"
 )

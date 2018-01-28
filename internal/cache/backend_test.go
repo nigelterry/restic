@@ -6,10 +6,10 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/backend"
-	"github.com/nigelterry/restic/internal/backend/mem"
-	"github.com/nigelterry/restic/internal/restic"
-	"github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/backend"
+	"github.com/restic/restic/internal/backend/mem"
+	"github.com/restic/restic/internal/restic"
+	"github.com/restic/restic/internal/test"
 )
 
 func loadAndCompare(t testing.TB, be restic.Backend, h restic.Handle, data []byte) {

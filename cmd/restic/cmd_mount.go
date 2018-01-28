@@ -10,12 +10,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/restic"
 
-	resticfs "github.com/nigelterry/restic/internal/fs"
-	"github.com/nigelterry/restic/internal/fuse"
+	resticfs "github.com/restic/restic/internal/fs"
+	"github.com/restic/restic/internal/fuse"
 
 	systemFuse "bazil.org/fuse"
 	"bazil.org/fuse/fs"

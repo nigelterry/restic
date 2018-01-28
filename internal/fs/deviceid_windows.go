@@ -5,7 +5,7 @@ package fs
 import (
 	"os"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 )
 
 // DeviceID extracts the device ID from an os.FileInfo object by casting it

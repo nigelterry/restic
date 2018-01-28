@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/backend/pcloud"
-	"github.com/nigelterry/restic/internal/backend/test"
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/backend/pcloud"
+	"github.com/restic/restic/internal/backend/test"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 func newTestSuite(t testing.TB) *test.Suite {

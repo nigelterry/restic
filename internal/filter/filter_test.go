@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/filter"
+	"github.com/restic/restic/internal/filter"
 )
 
 var matchTests = []struct {

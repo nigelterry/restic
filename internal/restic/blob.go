@@ -3,7 +3,7 @@ package restic
 import (
 	"fmt"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 )
 
 // Blob is one part of a file or a tree.

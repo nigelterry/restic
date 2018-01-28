@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/fs"
-	"github.com/nigelterry/restic/internal/repository"
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/fs"
+	"github.com/restic/restic/internal/repository"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 type Node interface{}

@@ -2,13 +2,16 @@ package pcloud
 
 import (
 	"strings"
+	"log"
 
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/options"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/options"
+	"net/url"
 )
 
 // Config holds all information needed to open a pcloud repository.
 type Config struct {
+	URL    *url.URL
 	Path   string
 	Layout string `option:"layout" help:"use this backend directory layout (default: auto-detect)"`
 
@@ -21,8 +24,14 @@ type Config struct {
 
 // NewConfig returns a new Config with the default values filled in.
 func NewConfig() Config {
+	u, err := url.Parse("https://api.pcloud.com")
+	if err != nil {
+		log.Fatal(err)
+	}
 	return Config{
 		Connections: 20,
+		URL: u,
+
 	}
 }
 

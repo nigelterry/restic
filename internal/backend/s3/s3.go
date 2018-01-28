@@ -10,14 +10,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nigelterry/restic/internal/backend"
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/backend"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/restic"
 
 	"github.com/minio/minio-go"
 	"github.com/minio/minio-go/pkg/credentials"
 
-	"github.com/nigelterry/restic/internal/debug"
+	"github.com/restic/restic/internal/debug"
 )
 
 // Backend stores data on an S3 endpoint.

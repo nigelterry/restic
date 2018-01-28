@@ -2,7 +2,7 @@ package backend
 
 import (
 	"context"
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 	"io"
 )
 

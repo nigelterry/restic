@@ -10,11 +10,11 @@ import (
 	"io"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/backend/mem"
-	"github.com/nigelterry/restic/internal/crypto"
-	"github.com/nigelterry/restic/internal/pack"
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/backend/mem"
+	"github.com/restic/restic/internal/crypto"
+	"github.com/restic/restic/internal/pack"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 var testLens = []int{23, 31650, 25860, 10928, 13769, 19862, 5211, 127, 13690, 30231}

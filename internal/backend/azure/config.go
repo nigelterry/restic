@@ -4,8 +4,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/options"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/options"
 )
 
 // Config contains all configuration necessary to connect to an azure compatible

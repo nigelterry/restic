@@ -6,7 +6,7 @@ package fuse
 import (
 	"os"
 
-	"github.com/nigelterry/restic/internal/debug"
+	"github.com/restic/restic/internal/debug"
 
 	"golang.org/x/net/context"
 

@@ -4,9 +4,9 @@ import (
 	"context"
 	"sync"
 
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/restic"
 
-	"github.com/nigelterry/restic/internal/debug"
+	"github.com/restic/restic/internal/debug"
 )
 
 // MasterIndex is a collection of indexes and IDs of chunks that are in the process of being saved.

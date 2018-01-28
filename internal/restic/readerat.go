@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/errors"
 )
 
 type backendReaderAt struct {

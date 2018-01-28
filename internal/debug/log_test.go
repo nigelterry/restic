@@ -1,8 +1,8 @@
 package debug_test
 
 import (
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/restic"
 
 	"testing"
 )

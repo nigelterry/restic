@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/restic"
 
-	"github.com/nigelterry/restic/internal/repository"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/repository"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 type testIDs []string

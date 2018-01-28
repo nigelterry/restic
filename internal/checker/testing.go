@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/restic"
 )
 
 // TestCheckRepo runs the checker on repo.

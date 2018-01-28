@@ -2,155 +2,174 @@ package pcloud
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"io"
-	"os"
-	"path/filepath"
-
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/restic"
-
-	"github.com/nigelterry/restic/internal/backend"
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/fs"
+	"io/ioutil"
 	"net/http"
+	"net/url"
+	"path"
+	"strings"
+
+	"golang.org/x/net/context/ctxhttp"
+
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/restic"
+
+	"github.com/restic/restic/internal/backend"
 )
 
-// Pcloud is a backend in a pcloud directory.
-type Pcloud struct {
-	Config
+// make sure the pcloud backend implements restic.Backend
+var _ restic.Backend = &pcloudBackend{}
+
+type pcloudBackend struct {
+	url    *url.URL
+	sem    *backend.Semaphore
+	client *http.Client
 	backend.Layout
 }
 
-// ensure statically that *Pcloud implements restic.Backend.
-var _ restic.Backend = &Pcloud{}
+const (
+	contentTypeV1 = "application/vnd.x.restic.rest.v1"
+	contentTypeV2 = "application/vnd.x.restic.rest.v2"
+)
 
-const defaultLayout = "default"
+// Open opens the PCLOUD backend with the given config.
+func Open(cfg Config, rt http.RoundTripper) (*pcloudBackend, error) {
+	client := &http.Client{Transport: rt}
 
-// dirExists returns true if the name exists and is a directory.
-func dirExists(name string) bool {
-	f, err := fs.Open(name)
-	if err != nil {
-		return false
-	}
-
-	fi, err := f.Stat()
-	if err != nil {
-		return false
-	}
-
-	if err = f.Close(); err != nil {
-		return false
-	}
-
-	return fi.IsDir()
-}
-
-// Open opens the pcloud backend as specified by config.
-func Open(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
-	debug.Log("open pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
-	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
+	sem, err := backend.NewSemaphore(cfg.Connections)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Pcloud{Config: cfg, Layout: l}, nil
-}
-
-// Create creates all the necessary files and directories for a new pcloud
-// backend at dir. Afterwards a new config blob should be created.
-func Create(cfg Config, rt http.RoundTripper) (*Pcloud, error) {
-	debug.Log("create pcloud backend at %v (layout %q)", cfg.Path, cfg.Layout)
-
-	l, err := backend.ParseLayout(&backend.LocalFilesystem{}, cfg.Layout, defaultLayout, cfg.Path)
-	if err != nil {
-		return nil, err
+	// use url without trailing slash for layout
+	url := cfg.URL.String()
+	if url[len(url)-1] == '/' {
+		url = url[:len(url)-1]
 	}
 
-	be := &Pcloud{
-		Config: cfg,
-		Layout: l,
-	}
-
-	// test if config file already exists
-	_, err = fs.Lstat(be.Filename(restic.Handle{Type: restic.ConfigFile}))
-	if err == nil {
-		return nil, errors.New("config file already exists")
-	}
-
-	// create paths for data and refs
-	for _, d := range be.Paths() {
-		err := fs.MkdirAll(d, backend.Modes.Dir)
-		if err != nil {
-			return nil, errors.Wrap(err, "MkdirAll")
-		}
+	be := &pcloudBackend{
+		url:    cfg.URL,
+		client: client,
+		Layout: &backend.PcloudLayout{URL: url, Join: path.Join},
+		sem:    sem,
 	}
 
 	return be, nil
 }
 
-// Location returns this backend's location (the directory name).
-func (b *Pcloud) Location() string {
-	return b.Path
+// Create creates a new PCLOUD on server configured in config.
+func Create(cfg Config, rt http.RoundTripper) (restic.Backend, error) {
+	be, err := Open(cfg, rt)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = be.Stat(context.TODO(), restic.Handle{Type: restic.ConfigFile})
+	if err == nil {
+		return nil, errors.Fatal("config file already exists")
+	}
+
+	url := *cfg.URL
+	values := url.Query()
+	values.Set("create", "true")
+	url.RawQuery = values.Encode()
+
+	resp, err := be.client.Post(url.String(), "binary/octet-stream", strings.NewReader(""))
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.Fatalf("server response unexpected: %v (%v)", resp.Status, resp.StatusCode)
+	}
+
+	_, err = io.Copy(ioutil.Discard, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return be, nil
 }
 
-// IsNotExist returns true if the error is caused by a non existing file.
-func (b *Pcloud) IsNotExist(err error) bool {
-	return os.IsNotExist(errors.Cause(err))
+// Location returns this backend's location (the server's URL).
+func (b *pcloudBackend) Location() string {
+	return b.url.String()
 }
 
 // Save stores data in the backend at the handle.
-func (b *Pcloud) Save(ctx context.Context, h restic.Handle, rd io.Reader) error {
-	debug.Log("Save %v", h)
+func (b *pcloudBackend) Save(ctx context.Context, h restic.Handle, rd io.Reader) (err error) {
 	if err := h.Valid(); err != nil {
 		return err
 	}
 
-	filename := b.Filename(h)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
-	// create new file
-	f, err := fs.OpenFile(filename, os.O_CREATE|os.O_EXCL|os.O_WRONLY, backend.Modes.File)
+	// make sure that client.Post() cannot close the reader by wrapping it
+	rd = ioutil.NopCloser(rd)
 
-	if b.IsNotExist(err) {
-		debug.Log("error %v: creating dir", err)
+	req, err := http.NewRequest(http.MethodPost, b.Filename(h), rd)
+	if err != nil {
+		return errors.Wrap(err, "NewRequest")
+	}
+	req.Header.Set("Content-Type", "application/octet-stream")
+	req.Header.Set("Accept", contentTypeV2)
 
-		// error is caused by a missing directory, try to create it/home/nterry/resticDevel
-		mkdirErr := os.MkdirAll(filepath.Dir(filename), backend.Modes.Dir)
-		if mkdirErr != nil {
-			debug.Log("error creating dir %v: %v", filepath.Dir(filename), mkdirErr)
-		} else {
-			// try again
-			f, err = fs.OpenFile(filename, os.O_CREATE|os.O_EXCL|os.O_WRONLY, backend.Modes.File)
-		}
+	b.sem.GetToken()
+	resp, err := ctxhttp.Do(ctx, b.client, req)
+	b.sem.ReleaseToken()
+
+	if resp != nil {
+		defer func() {
+			_, _ = io.Copy(ioutil.Discard, resp.Body)
+			e := resp.Body.Close()
+
+			if err == nil {
+				err = errors.Wrap(e, "Close")
+			}
+		}()
 	}
 
 	if err != nil {
-		return errors.Wrap(err, "OpenFile")
+		return errors.Wrap(err, "client.Post")
 	}
 
-	// save data, then sync
-	_, err = io.Copy(f, rd)
-	if err != nil {
-		_ = f.Close()
-		return errors.Wrap(err, "Write")
+	if resp.StatusCode != 200 {
+		return errors.Errorf("server response unexpected: %v (%v)", resp.Status, resp.StatusCode)
 	}
 
-	if err = f.Sync(); err != nil {
-		_ = f.Close()
-		return errors.Wrap(err, "Sync")
-	}
+	return nil
+}
 
-	err = f.Close()
-	if err != nil {
-		return errors.Wrap(err, "Close")
-	}
+// ErrIsNotExist is returned whenever the requested file does not exist on the
+// server.
+type ErrIsNotExist struct {
+	restic.Handle
+}
 
-	return setNewFileMode(filename, backend.Modes.File)
+func (e ErrIsNotExist) Error() string {
+	return fmt.Sprintf("%v does not exist", e.Handle)
+}
+
+// IsNotExist returns true if the error was caused by a non-existing file.
+func (b *pcloudBackend) IsNotExist(err error) bool {
+	err = errors.Cause(err)
+	_, ok := err.(ErrIsNotExist)
+	return ok
 }
 
 // Load returns a reader that yields the contents of the file at h at the
 // given offset. If length is nonzero, only a portion of the file is
 // returned. rd must be closed after use.
-func (b *Pcloud) Load(ctx context.Context, h restic.Handle, length int, offset int64) (io.ReadCloser, error) {
+func (b *pcloudBackend) Load(ctx context.Context, h restic.Handle, length int, offset int64) (io.ReadCloser, error) {
 	debug.Log("Load %v, length %v, offset %v", h, length, offset)
 	if err := h.Valid(); err != nil {
 		return nil, err
@@ -160,127 +179,274 @@ func (b *Pcloud) Load(ctx context.Context, h restic.Handle, length int, offset i
 		return nil, errors.New("offset is negative")
 	}
 
-	f, err := fs.Open(b.Filename(h))
+	if length < 0 {
+		return nil, errors.Errorf("invalid length %d", length)
+	}
+
+	req, err := http.NewRequest("GET", b.Filename(h), nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "http.NewRequest")
 	}
 
-	if offset > 0 {
-		_, err = f.Seek(offset, 0)
-		if err != nil {
-			_ = f.Close()
-			return nil, err
-		}
-	}
-
+	byteRange := fmt.Sprintf("bytes=%d-", offset)
 	if length > 0 {
-		return backend.LimitReadCloser(f, int64(length)), nil
+		byteRange = fmt.Sprintf("bytes=%d-%d", offset, offset+int64(length)-1)
+	}
+	req.Header.Set("Range", byteRange)
+	req.Header.Set("Accept", contentTypeV2)
+	debug.Log("Load(%v) send range %v", h, byteRange)
+
+	b.sem.GetToken()
+	resp, err := ctxhttp.Do(ctx, b.client, req)
+	b.sem.ReleaseToken()
+
+	if err != nil {
+		if resp != nil {
+			_, _ = io.Copy(ioutil.Discard, resp.Body)
+			_ = resp.Body.Close()
+		}
+		return nil, errors.Wrap(err, "client.Do")
 	}
 
-	return f, nil
+	if resp.StatusCode == http.StatusNotFound {
+		_ = resp.Body.Close()
+		return nil, ErrIsNotExist{h}
+	}
+
+	if resp.StatusCode != 200 && resp.StatusCode != 206 {
+		_ = resp.Body.Close()
+		return nil, errors.Errorf("unexpected HTTP response (%v): %v", resp.StatusCode, resp.Status)
+	}
+
+	return resp.Body, nil
 }
 
 // Stat returns information about a blob.
-func (b *Pcloud) Stat(ctx context.Context, h restic.Handle) (restic.FileInfo, error) {
-	debug.Log("Stat %v", h)
+func (b *pcloudBackend) Stat(ctx context.Context, h restic.Handle) (restic.FileInfo, error) {
 	if err := h.Valid(); err != nil {
 		return restic.FileInfo{}, err
 	}
 
-	fi, err := fs.Stat(b.Filename(h))
+	req, err := http.NewRequest(http.MethodHead, b.Filename(h), nil)
 	if err != nil {
-		return restic.FileInfo{}, errors.Wrap(err, "Stat")
+		return restic.FileInfo{}, errors.Wrap(err, "NewRequest")
+	}
+	req.Header.Set("Accept", contentTypeV2)
+
+	b.sem.GetToken()
+	resp, err := ctxhttp.Do(ctx, b.client, req)
+	b.sem.ReleaseToken()
+	if err != nil {
+		return restic.FileInfo{}, errors.Wrap(err, "client.Head")
 	}
 
-	return restic.FileInfo{Size: fi.Size(), Name: h.Name}, nil
+	_, _ = io.Copy(ioutil.Discard, resp.Body)
+	if err = resp.Body.Close(); err != nil {
+		return restic.FileInfo{}, errors.Wrap(err, "Close")
+	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		_ = resp.Body.Close()
+		return restic.FileInfo{}, ErrIsNotExist{h}
+	}
+
+	if resp.StatusCode != 200 {
+		return restic.FileInfo{}, errors.Errorf("unexpected HTTP response (%v): %v", resp.StatusCode, resp.Status)
+	}
+
+	if resp.ContentLength < 0 {
+		return restic.FileInfo{}, errors.New("negative content length")
+	}
+
+	bi := restic.FileInfo{
+		Size: resp.ContentLength,
+		Name: h.Name,
+	}
+
+	return bi, nil
 }
 
 // Test returns true if a blob of the given type and name exists in the backend.
-func (b *Pcloud) Test(ctx context.Context, h restic.Handle) (bool, error) {
-	debug.Log("Test %v", h)
-	_, err := fs.Stat(b.Filename(h))
+func (b *pcloudBackend) Test(ctx context.Context, h restic.Handle) (bool, error) {
+	_, err := b.Stat(ctx, h)
 	if err != nil {
-		if os.IsNotExist(errors.Cause(err)) {
-			return false, nil
-		}
-		return false, errors.Wrap(err, "Stat")
+		return false, nil
 	}
 
 	return true, nil
 }
 
 // Remove removes the blob with the given name and type.
-func (b *Pcloud) Remove(ctx context.Context, h restic.Handle) error {
-	debug.Log("Remove %v", h)
-	fn := b.Filename(h)
-
-	// reset read-only flag
-	err := fs.Chmod(fn, 0666)
-	if err != nil {
-		return errors.Wrap(err, "Chmod")
+func (b *pcloudBackend) Remove(ctx context.Context, h restic.Handle) error {
+	if err := h.Valid(); err != nil {
+		return err
 	}
 
-	return fs.Remove(fn)
-}
+	req, err := http.NewRequest("DELETE", b.Filename(h), nil)
+	if err != nil {
+		return errors.Wrap(err, "http.NewRequest")
+	}
+	req.Header.Set("Accept", contentTypeV2)
 
-func isFile(fi os.FileInfo) bool {
-	return fi.Mode()&(os.ModeType|os.ModeCharDevice) == 0
+	b.sem.GetToken()
+	resp, err := ctxhttp.Do(ctx, b.client, req)
+	b.sem.ReleaseToken()
+
+	if err != nil {
+		return errors.Wrap(err, "client.Do")
+	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		_ = resp.Body.Close()
+		return ErrIsNotExist{h}
+	}
+
+	if resp.StatusCode != 200 {
+		return errors.Errorf("blob not removed, server response: %v (%v)", resp.Status, resp.StatusCode)
+	}
+
+	_, err = io.Copy(ioutil.Discard, resp.Body)
+	if err != nil {
+		return errors.Wrap(err, "Copy")
+	}
+
+	return errors.Wrap(resp.Body.Close(), "Close")
 }
 
 // List runs fn for each file in the backend which has the type t. When an
 // error occurs (or fn returns an error), List stops and returns it.
-func (b *Pcloud) List(ctx context.Context, t restic.FileType, fn func(restic.FileInfo) error) error {
-	debug.Log("List %v", t)
+func (b *pcloudBackend) List(ctx context.Context, t restic.FileType, fn func(restic.FileInfo) error) error {
+	url := b.Dirname(restic.Handle{Type: t})
+	if !strings.HasSuffix(url, "/") {
+		url += "/"
+	}
 
-	basedir, subdirs := b.Basedir(t)
-	return fs.Walk(basedir, func(path string, fi os.FileInfo, err error) error {
-		debug.Log("walk on %v\n", path)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return errors.Wrap(err, "NewRequest")
+	}
+	req.Header.Set("Accept", contentTypeV2)
+
+	b.sem.GetToken()
+	resp, err := ctxhttp.Do(ctx, b.client, req)
+	b.sem.ReleaseToken()
+
+	if err != nil {
+		return errors.Wrap(err, "Get")
+	}
+
+	if resp.Header.Get("Content-Type") == contentTypeV2 {
+		return b.listv2(ctx, t, resp, fn)
+	}
+
+	return b.listv1(ctx, t, resp, fn)
+}
+
+// listv1 uses the REST protocol v1, where a list HTTP request (e.g. `GET
+// /data/`) only returns the names of the files, so we need to issue an HTTP
+// HEAD request for each file.
+func (b *pcloudBackend) listv1(ctx context.Context, t restic.FileType, resp *http.Response, fn func(restic.FileInfo) error) error {
+	debug.Log("parsing API v1 response")
+	dec := json.NewDecoder(resp.Body)
+	var list []string
+	if err := dec.Decode(&list); err != nil {
+		return errors.Wrap(err, "Decode")
+	}
+
+	for _, m := range list {
+		fi, err := b.Stat(ctx, restic.Handle{Name: m, Type: t})
 		if err != nil {
 			return err
-		}
-
-		if path == basedir {
-			return nil
-		}
-
-		if !isFile(fi) {
-			return nil
-		}
-
-		if fi.IsDir() && !subdirs {
-			return filepath.SkipDir
-		}
-
-		debug.Log("send %v\n", filepath.Base(path))
-
-		rfi := restic.FileInfo{
-			Name: filepath.Base(path),
-			Size: fi.Size(),
 		}
 
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
 
-		err = fn(rfi)
+		fi.Name = m
+		err = fn(fi)
 		if err != nil {
 			return err
 		}
 
-		return ctx.Err()
-	})
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+	}
+
+	return ctx.Err()
 }
 
-// Delete removes the repository and all files.
-func (b *Pcloud) Delete(ctx context.Context) error {
-	debug.Log("Delete()")
-	return fs.RemoveAll(b.Path)
+// listv2 uses the REST protocol v2, where a list HTTP request (e.g. `GET
+// /data/`) returns the names and sizes of all files.
+func (b *pcloudBackend) listv2(ctx context.Context, t restic.FileType, resp *http.Response, fn func(restic.FileInfo) error) error {
+	debug.Log("parsing API v2 response")
+	dec := json.NewDecoder(resp.Body)
+
+	var list []struct {
+		Name string `json:"name"`
+		Size int64  `json:"size"`
+	}
+	if err := dec.Decode(&list); err != nil {
+		return errors.Wrap(err, "Decode")
+	}
+
+	for _, item := range list {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+
+		fi := restic.FileInfo{
+			Name: item.Name,
+			Size: item.Size,
+		}
+
+		err := fn(fi)
+		if err != nil {
+			return err
+		}
+
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+	}
+
+	return ctx.Err()
 }
 
 // Close closes all open files.
-func (b *Pcloud) Close() error {
-	debug.Log("Close()")
+func (b *pcloudBackend) Close() error {
 	// this does not need to do anything, all open files are closed within the
 	// same function.
 	return nil
+}
+
+// Remove keys for a specified backend type.
+func (b *pcloudBackend) removeKeys(ctx context.Context, t restic.FileType) error {
+	return b.List(ctx, t, func(fi restic.FileInfo) error {
+		return b.Remove(ctx, restic.Handle{Type: t, Name: fi.Name})
+	})
+}
+
+// Delete removes all data in the backend.
+func (b *pcloudBackend) Delete(ctx context.Context) error {
+	alltypes := []restic.FileType{
+		restic.DataFile,
+		restic.KeyFile,
+		restic.LockFile,
+		restic.SnapshotFile,
+		restic.IndexFile}
+
+	for _, t := range alltypes {
+		err := b.removeKeys(ctx, t)
+		if err != nil {
+			return nil
+		}
+	}
+
+	err := b.Remove(ctx, restic.Handle{Type: restic.ConfigFile})
+	if err != nil && b.IsNotExist(err) {
+		return nil
+	}
+	return err
 }

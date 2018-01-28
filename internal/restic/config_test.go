@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 type saver func(restic.FileType, interface{}) (restic.ID, error)

@@ -4,7 +4,7 @@
 package fuse
 
 import (
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/restic"
 	"golang.org/x/net/context"
 )
 

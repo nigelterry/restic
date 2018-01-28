@@ -8,15 +8,15 @@ import (
 	"os"
 	"sync"
 
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/fs"
-	"github.com/nigelterry/restic/internal/hashing"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/fs"
+	"github.com/restic/restic/internal/hashing"
+	"github.com/restic/restic/internal/restic"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/pack"
-	"github.com/nigelterry/restic/internal/repository"
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/pack"
+	"github.com/restic/restic/internal/repository"
 )
 
 // Checker runs various checks on a repository. It is advisable to create an

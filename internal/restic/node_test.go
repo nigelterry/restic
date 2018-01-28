@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/restic"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/restic"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 func BenchmarkNodeFillUser(t *testing.B) {

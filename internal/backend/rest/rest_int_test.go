@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nigelterry/restic/internal/backend/rest"
-	"github.com/nigelterry/restic/internal/restic"
+	"github.com/restic/restic/internal/backend/rest"
+	"github.com/restic/restic/internal/restic"
 )
 
 func TestListAPI(t *testing.T) {

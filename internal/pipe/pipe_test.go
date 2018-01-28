@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nigelterry/restic/internal/debug"
-	"github.com/nigelterry/restic/internal/pipe"
-	rtest "github.com/nigelterry/restic/internal/test"
+	"github.com/restic/restic/internal/debug"
+	"github.com/restic/restic/internal/pipe"
+	rtest "github.com/restic/restic/internal/test"
 )
 
 type stats struct {

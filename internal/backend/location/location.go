@@ -4,16 +4,16 @@ package location
 import (
 	"strings"
 
-	"github.com/nigelterry/restic/internal/backend/azure"
-	"github.com/nigelterry/restic/internal/backend/b2"
-	"github.com/nigelterry/restic/internal/backend/gs"
-	"github.com/nigelterry/restic/internal/backend/local"
-	"github.com/nigelterry/restic/internal/backend/rest"
-	"github.com/nigelterry/restic/internal/backend/s3"
-	"github.com/nigelterry/restic/internal/backend/sftp"
-	"github.com/nigelterry/restic/internal/backend/swift"
-	"github.com/nigelterry/restic/internal/errors"
-	"github.com/nigelterry/restic/internal/backend/pcloud"
+	"github.com/restic/restic/internal/backend/azure"
+	"github.com/restic/restic/internal/backend/b2"
+	"github.com/restic/restic/internal/backend/gs"
+	"github.com/restic/restic/internal/backend/local"
+	"github.com/restic/restic/internal/backend/rest"
+	"github.com/restic/restic/internal/backend/s3"
+	"github.com/restic/restic/internal/backend/sftp"
+	"github.com/restic/restic/internal/backend/swift"
+	"github.com/restic/restic/internal/errors"
+	"github.com/restic/restic/internal/backend/pcloud"
 )
 
 // Location specifies the location of a repository, including the method of

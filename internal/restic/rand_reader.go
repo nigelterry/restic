@@ -4,7 +4,7 @@ import (
 	"io"
 	"math/rand"
 
-	"github.com/nigelterry/restic/internal/errors"
+	"github.com/restic/restic/internal/errors"
 )
 
 // RandReader allows reading from a rand.Rand.
